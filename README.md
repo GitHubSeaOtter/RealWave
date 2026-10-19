@@ -2,6 +2,8 @@
 
 風、光、波のあいだへ。WebGL2 と Web Audio で生成する、リアルタイムの海と波音のデモです。Windows 版 Chrome と GeForce RTX 2060 を想定し、外部ライブラリ・動画・音源・CDN に依存せず動作します。
 
+![RealWave：黄金色の空を映すリアルタイムの海](docs/preview.png)
+
 ## 体験する
 
 GitHub Pages: https://githubseaotter.github.io/RealWave/
