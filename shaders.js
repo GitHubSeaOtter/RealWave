@@ -40,7 +40,7 @@ float fbm(vec2 p){
   mat2 m=mat2(1.6,1.2,-1.2,1.6);
   for(int i=0;i<4;i++){n+=a*noise(p);p=m*p+17.3;a*=.48;}return n;
 }
-vec3 sunDirection(){return normalize(vec3(-.48,uSunElevation,-.88));}
+vec3 sunDirection(){return normalize(vec3(.48,uSunElevation,-.88));}
 
 // The low-frequency geometry is shared by the ray intersection and normal field.
 // exp(sin()) makes smooth troughs and compact crests. Dispersion follows sqrt(g*k).
@@ -65,12 +65,12 @@ vec3 waves(vec2 p,int count){
 vec3 sky(vec3 rd,bool clouds){
   vec3 sun=sunDirection();
   float y=max(rd.y,0.);
-  vec3 col=mix(uHorizon,uSkyTop,pow(clamp(y,0.,1.),.45));
+  vec3 col=mix(uHorizon,uSkyTop,pow(clamp(y,0.,1.),.28));
   float alignment=max(dot(rd,sun),0.);
   // Forward scattering and a sub-degree sun disc.
   col+=uSunColor*pow(alignment,8.)*.28;
   col+=uSunColor*pow(alignment,180.)*.34;
-  col+=uSunColor*(1.-smoothstep(.003,.007,acos(clamp(alignment,0.,1.))))*4.;
+  float sunDisc=1.-smoothstep(.003,.007,acos(clamp(alignment,0.,1.)));
   if(clouds&&rd.y>.008){
     vec2 cp=rd.xz/(rd.y+.09)*190.+vec2(uTime*1.1,0.);
     float n=fbm(cp*.035);
@@ -82,6 +82,7 @@ vec3 sky(vec3 rd,bool clouds){
     float wisps=smoothstep(.56,.78,fbm(cp*vec2(.018,.04)+240.));
     col=mix(col,uHorizon*.95,wisps*.18);
   }
+  col+=uSunColor*sunDisc*4.*(1.-uCloud*.92);
   return col;
 }
 
@@ -158,8 +159,8 @@ void main(){
       vec2 foamUV=p.xz*.65+vec2(-uTime*.18,uTime*.08);
       float foamNoise=fbm(foamUV*4.);
       float crest=wave.x/max(uSwell,.1);
-      float foam=smoothstep(.64,.96,crest+foamNoise*.4+length(slopes)*.24);
-      foam*=smoothstep(.33,.7,foamNoise)*(.18+uWind*.58);
+      float foam=smoothstep(1.05,1.65,crest+foamNoise*.28+length(slopes)*.18);
+      foam*=smoothstep(.33,.7,foamNoise)*(.05+uWind*.5);
       float cells=noise(foamUV*45.);
       vec3 foamColor=(uHorizon*.65+vec3(.15))*(.75+cells*.25);
       color=mix(color,foamColor,foam*exp(-distance*.0015));
