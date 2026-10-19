@@ -1,0 +1,11 @@
+{
+  "name": "realwave",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A real-time procedural ocean and stereo surf experience",
+  "scripts": {
+    "start": "python3 -m http.server 4173 --bind 0.0.0.0",
+    "check": "node --check app.js && node --check audio.js && node --check shaders.js"
+  }
+}
